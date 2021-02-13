@@ -55,3 +55,19 @@ files_csv <- fs::dir_ls(here::here("data-raw"), regexp = ".csv$")
 comtrade <- purrr::map_df(files_csv, vroom::vroom)
 
 usethis::use_data(comtrade)
+
+url <- "https://comtrade.un.org/data/cache/reporterAreas.json"
+
+httr::GET(url, httr::write_disk(here::here("data-raw", "dic_reporters.json")))
+
+dic_reporters <- jsonlite::fromJSON(here::here("data-raw", "dic_reporters.json"), simplifyDataFrame = T)
+
+usethis::use_data(dic_reporters)
+
+url <- "https://comtrade.un.org/data/cache/partnerAreas.json"
+
+httr::GET(url, httr::write_disk(here::here("data-raw", "dic_partners.json")))
+
+dic_partners <- jsonlite::fromJSON(here::here("data-raw", "dic_partners.json"), simplifyDataFrame = T)
+
+usethis::use_data(dic_partners)
