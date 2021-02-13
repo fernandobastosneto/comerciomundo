@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data-raw/*.csv
+data-raw/*.zip
+.Rdata
+.httr-oauth
+.DS_Store
