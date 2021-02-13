@@ -62,6 +62,9 @@ httr::GET(url, httr::write_disk(here::here("data-raw", "dic_reporters.json")))
 
 dic_reporters <- jsonlite::fromJSON(here::here("data-raw", "dic_reporters.json"), simplifyDataFrame = T)
 
+dic_reporters <- dic_reporters$results %>%
+  tibble::as_tibble()
+
 usethis::use_data(dic_reporters)
 
 url <- "https://comtrade.un.org/data/cache/partnerAreas.json"
@@ -70,4 +73,23 @@ httr::GET(url, httr::write_disk(here::here("data-raw", "dic_partners.json")))
 
 dic_partners <- jsonlite::fromJSON(here::here("data-raw", "dic_partners.json"), simplifyDataFrame = T)
 
+dic_partners <- dic_partners$results %>%
+  tibble::as_tibble()
+
 usethis::use_data(dic_partners)
+
+# Nomes dos países - do MDIC ao Comtrade
+
+dic_comtrade <- comerciomundo::dic_reporters %>%
+  dplyr::mutate(id = as.numeric(id)) %>%
+  tidyr::drop_na()
+
+dic_mdic <- readr::read_csv2(here::here("data-raw", "dic_paises_comtrade_mdic.csv")) %>%
+  janitor::clean_names() %>%
+  dplyr::select(co_pais_ison3, no_pais, no_pais_ing) %>%
+  dplyr::rename(id = co_pais_ison3) %>%
+  dplyr::mutate(id = as.numeric(id))
+
+dic_comtrade_mdic <- dic_mdic %>%
+  dplyr::left_join(dic_comtrade)
+
