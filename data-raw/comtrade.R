@@ -14,7 +14,7 @@ url <- paste0(url_base, "r=", r, "&freq=", freq, "&ps=", ps, "&px=", px,
 
 req <- httr::GET(url)
 
-#
+# baixar efetivamente os dados
 
 get_comtrade <- function(ano) {
 
@@ -40,13 +40,14 @@ write_comtrade <- function(file) {
   filename <- file %>%
     stringr::str_extract("\\d{4}_comtrade(?=.zip$)")
 
-  vroom::vroom(file,
-               col_select = c(Year, `Aggregate Level`, `Trade Flow Code`, `Reporter Code`,
-                              `Partner Code`, `Commodity Code`, `Trade Value (US$)`)) %>%
+  data.table::fread(paste0("unzip -p ", file)) %>%
     janitor::clean_names() %>%
-    dplyr::filter(aggregate_level == 2) %>%
-    vroom::vroom_write(paste0(here::here("data-raw/"), filename, ".csv"))
+    .[, .(year, aggregate_level, trade_flow_code, reporter_code, partner_code, commodity_code,
+          trade_value_us)] %>%
+    .[aggregate_level == 2] %>%
+    data.table::fwrite(paste0(here::here("data-raw/"), filename, ".csv"))
 }
+
 
 purrr::walk(files, write_comtrade)
 
@@ -93,3 +94,4 @@ dic_mdic <- readr::read_csv2(here::here("data-raw", "dic_paises_comtrade_mdic.cs
 dic_comtrade_mdic <- dic_mdic %>%
   dplyr::left_join(dic_comtrade)
 
+usethis::use_data(dic_comtrade_mdic)
