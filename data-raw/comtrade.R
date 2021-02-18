@@ -48,10 +48,9 @@ write_comtrade <- function(file) {
     data.table::fwrite(paste0(here::here("data-raw/"), filename, ".csv"))
 }
 
-
 purrr::walk(files, write_comtrade)
 
-files_csv <- fs::dir_ls(here::here("data-raw"), regexp = ".csv$")
+files_csv <- fs::dir_ls(here::here("data-raw"), regexp = "comtrade.csv$")
 
 comtrade <- purrr::map_df(files_csv, vroom::vroom)
 
@@ -87,7 +86,7 @@ dic_comtrade <- comerciomundo::dic_reporters %>%
 
 dic_mdic <- readr::read_csv2(here::here("data-raw", "dic_paises_comtrade_mdic.csv")) %>%
   janitor::clean_names() %>%
-  dplyr::select(co_pais_ison3, no_pais, no_pais_ing) %>%
+  dplyr::select(co_pais_ison3, co_pais_isoa3, no_pais, no_pais_ing) %>%
   dplyr::rename(id = co_pais_ison3) %>%
   dplyr::mutate(id = as.numeric(id))
 
