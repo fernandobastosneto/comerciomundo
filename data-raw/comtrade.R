@@ -91,6 +91,16 @@ dic_mdic <- readr::read_csv2(here::here("data-raw", "dic_paises_comtrade_mdic.cs
   dplyr::mutate(id = as.numeric(id))
 
 dic_comtrade_mdic <- dic_mdic %>%
-  dplyr::left_join(dic_comtrade)
+  dplyr::left_join(dic_comtrade) %>%
+  tibble::add_row(id = c(899, 637, 527, 577, 490, 568),
+                  co_pais_isoa3 = c("NADA", "NADA", "NADA",
+                                                 "NADA", "NADA", "NADA"),
+                  no_pais = c("País Indeterminado", "Indeterminado, América Central e do Norte",
+                              "Indeterminado, Oceania", "Indeterminado, África", "Indeterminado, Ásia",
+                              "Indeterminado, Europa"),
+                  no_pais_ing = c("Areas, nes", "North America and Central America, nes",
+                                  "Oceania, nes", "Africa, nes", "Asia, nes", "Europe, nes"),
+                  text = c("Areas, nes", "North America and Central America, nes",
+                           "Oceania, nes", "Africa, nes", "Asia, nes", "Europe, nes"))
 
-usethis::use_data(dic_comtrade_mdic)
+usethis::use_data(dic_comtrade_mdic, overwrite = T)
