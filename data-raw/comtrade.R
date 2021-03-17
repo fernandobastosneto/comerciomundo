@@ -1,18 +1,18 @@
 library(magrittr)
 
 # Avaliar a disponibilidade dos dados
-url_base_availability <- "http://comtrade.un.org/api/refs/da/bulk?"
-r <- "all"
-freq <- "A"
-ps <- "2018"
-px <- "HS"
-type <- "C"
-token <- "t/waZ8Eu4BGH1yRU3KHnyiv6BspmGbDDkTAjMbfJNXhY1aJf5XUHjhM/McT4XnrUT84ZstrnCPyZaKGNSUQdTpymWHXyflX+dU89pkjILinwN9a7goI4VdO51hWRApE4Gegz12xS4fPNTep16SBEs7IAI//8UIiqC14n6joag9UquzefV2/WO7PGhhPz/VPW"
-
-url <- paste0(url_base, "r=", r, "&freq=", freq, "&ps=", ps, "&px=", px,
-              "&type=", type, "&token=", token)
-
-req <- httr::GET(url)
+# url_base_availability <- "http://comtrade.un.org/api/refs/da/bulk?"
+# r <- "all"
+# freq <- "A"
+# ps <- "2018"
+# px <- "HS"
+# type <- "C"
+# token <- Sys.getenv("COMTRADE_TOKEN")
+#
+# url <- paste0(url_base, "r=", r, "&freq=", freq, "&ps=", ps, "&px=", px,
+#               "&type=", type, "&token=", token)
+#
+# req <- httr::GET(url)
 
 # baixar efetivamente os dados
 
@@ -54,7 +54,7 @@ files_csv <- fs::dir_ls(here::here("data-raw"), regexp = "comtrade.csv$")
 
 comtrade <- purrr::map_df(files_csv, vroom::vroom)
 
-usethis::use_data(comtrade)
+usethis::use_data(comtrade, overwrite = T)
 
 url <- "https://comtrade.un.org/data/cache/reporterAreas.json"
 
